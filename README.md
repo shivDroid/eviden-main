@@ -1,73 +1,54 @@
-# Welcome to your Lovable project
+# Eviden
 
-## Project info
+## What is Eviden?
 
-**URL**: https://lovable.dev/projects/164700c5-1b71-4d71-b5b4-edf9fc37be36
+Eviden is an app designed to help you break your limiting beliefs and take action on your boldest ideas. Every day, Eviden sends you real-world data and stories showing what others have achieved—reminding you that what you’re dreaming of is not impossible. Our mission is to push you to start, by proving that people just like you have already done it.
 
-## How can I edit this code?
+- **Daily Proof:** Get inspiring examples and data in your inbox every day.
+- **Real Stories:** See what real people have accomplished, not just theory.
+- **No Spam:** Only motivation and evidence, never junk.
 
-There are several ways of editing your application.
+> **You’re not alone. You’re not crazy. You can do it.**
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/164700c5-1b71-4d71-b5b4-edf9fc37be36) and start prompting.
+## Features
 
-Changes made via Lovable will be committed automatically to this repo.
+- Collects your email and (optionally) your big idea or challenge
+- Sends you daily proof and stories tailored to your interests
+- Built with React, TypeScript, Supabase, and Tailwind CSS
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Screenshots
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Landing Page & Waiting List
+![Landing Page & Waiting List](./public/landingPage-waitingList.png)
 
-Follow these steps:
+### Use Case Examples
+![Use Case Examples](./public/useCaseExamples.png)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Information Example
+![Information Example](./public/informationExample.png)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Getting Started
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
+## Tech Stack
 - React
-- shadcn-ui
+- TypeScript
+- Supabase
 - Tailwind CSS
+- shadcn/ui
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/164700c5-1b71-4d71-b5b4-edf9fc37be36) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## License
+MIT
