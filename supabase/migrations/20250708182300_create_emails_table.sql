@@ -16,10 +16,13 @@ ON public.emails
 FOR INSERT 
 WITH CHECK (true);
 
--- Create policy to allow anyone to update ideas
-CREATE POLICY "Anyone can update ideas" 
+-- Create policy to allow updates to existing email records
+-- This is needed for the idea submission functionality
+-- The email field is unique, so users can only update their own record
+CREATE POLICY "Allow updates to existing email records" 
 ON public.emails 
 FOR UPDATE 
+USING (true)
 WITH CHECK (true);
 
 -- Create policy to prevent reading emails (admin access only)

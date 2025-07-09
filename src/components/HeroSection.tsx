@@ -11,6 +11,7 @@ export const HeroSection = () => {
   const [submittedEmail, setSubmittedEmail] = useState("");
   const [idea, setIdea] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingIdea, setIsSubmittingIdea] = useState(false);
   const [showIdeaDialog, setShowIdeaDialog] = useState(false);
   const { toast } = useToast();
 
@@ -18,58 +19,140 @@ export const HeroSection = () => {
     e.preventDefault();
     if (!email) return;
     
+    // Client-side email validation
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
-      const { error } = await supabase
-        .from('emails')
-        .insert([{ email }]);
+      // Use the secure function instead of direct insert
+      const { data, error } = await supabase
+        .rpc('secure_insert_email', {
+          email_address: email,
+          idea_text: null
+        });
       
       if (error) {
-        if (error.code === '23505') { // Unique constraint violation
+        throw error;
+      }
+      
+      if (data && data.error) {
+        if (data.error === 'Rate limit exceeded') {
           toast({
-            title: "Already on the list!",
-            description: "This email is already registered. We'll keep sending you proof!",
+            title: "Too many attempts",
+            description: "Please wait a bit before trying again.",
+            variant: "destructive",
           });
-          setEmail(""); // Clear input on duplicate
+        } else if (data.error === 'Invalid input data') {
+          toast({
+            title: "Invalid input",
+            description: "Please check your email format.",
+            variant: "destructive",
+          });
         } else {
-          throw error;
+          throw new Error(data.error);
         }
       } else {
+        setSubmittedEmail(email); // Store the submitted email for idea update
         setShowIdeaDialog(true);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error saving email:', error);
-      toast({
+      
+      // Check for specific error codes
+      if (error && typeof error === 'object' && 'code' in error && error.code === '23505') { // Unique constraint violation
+        toast({
+          title: "Already on the list!",
+          description: "This email is already registered. We'll keep sending you proof!",
+        });
+        setEmail(""); // Clear input on duplicate
+      } else {
+        toast({
           title: "Something went wrong",
           description: "Please try again later.",
           variant: "destructive",
-      });
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleIdeaSubmit = async () => {
+    if (!submittedEmail) {
+      console.error('No submitted email found');
+      return;
+    }
+
+    // Client-side validation for idea length
+    if (idea.length > 1000) {
+      toast({
+        title: "Idea too long",
+        description: "Please keep your idea under 1000 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmittingIdea(true);
+    
     try {
-      // Update the email record with the idea
-      const { error } = await supabase
-        .from('emails')
-        .update({ idea })
-        .eq('email', email);
+      // Use the secure function to update with idea
+      const { data, error } = await supabase
+        .rpc('secure_insert_email', {
+          email_address: submittedEmail,
+          idea_text: idea
+        });
       
       if (error) {
-        console.error('Error saving idea:', error);
+        throw error;
+      }
+      
+      if (data && data.error) {
+        toast({
+          title: "Couldn't save your idea",
+          description: "Your email was saved, but we couldn't save your idea. We'll still send you proof!",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Thanks for sharing!",
+          description: "We'll send you proof that your bold idea is possible.",
+        });
       }
     } catch (error) {
       console.error('Error saving idea:', error);
+      toast({
+        title: "Couldn't save your idea",
+        description: "Your email was saved, but we couldn't save your idea. We'll still send you proof!",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingIdea(false);
+      setShowIdeaDialog(false);
+      setEmail("");
+      setIdea("");
+      setSubmittedEmail("");
     }
-    
-    setShowIdeaDialog(false);
   };
 
   const handleSkipIdea = () => {
     setShowIdeaDialog(false);
+    setEmail("");
+    setIdea("");
+    setSubmittedEmail("");
+    toast({
+      title: "You're on the list",
+      description: "We'll send you proof that your bold idea is possible.",
+    });
   };
 
   const onDialogChange = (open: boolean) => {
@@ -82,6 +165,7 @@ export const HeroSection = () => {
       });
       setEmail("");
       setIdea("");
+      setSubmittedEmail("");
     }
     setShowIdeaDialog(open);
   };
@@ -142,10 +226,10 @@ export const HeroSection = () => {
               className="min-h-[100px]"
             />
             <div className="flex gap-3">
-              <Button onClick={handleIdeaSubmit} className="flex-1" disabled={isSubmitting}>
-                {isSubmitting ? "..." : "Share & Join"}
+              <Button onClick={handleIdeaSubmit} className="flex-1" disabled={isSubmittingIdea}>
+                {isSubmittingIdea ? "..." : "Share & Join"}
               </Button>
-              <Button onClick={handleSkipIdea} variant="outline" className="flex-1" disabled={isSubmitting}>
+              <Button onClick={handleSkipIdea} variant="outline" className="flex-1" disabled={isSubmittingIdea}>
                 Skip for now
               </Button>
             </div>
