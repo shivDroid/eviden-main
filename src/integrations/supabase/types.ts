@@ -43,7 +43,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      secure_insert_email: {
+        Args: {
+          email_address: string
+          idea_text?: string | null
+        }
+        Returns: {
+          success?: boolean
+          error?: string
+        }
+      }
     }
     Enums: {
       [_ in never]: never
